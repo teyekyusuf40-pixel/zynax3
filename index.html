@@ -2,135 +2,182 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Google Play Ödeme</title>
+    <title>ZYnaX v45: THE CORE BREAKER</title>
     <style>
+        /* --- ANA SAYFA STİLLERİ --- */
         body {
             background-color: #000;
-            font-family: 'Roboto', sans-serif;
+            color: #0f0;
+            font-family: 'Courier New', Courier, monospace;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
             margin: 0;
-            overflow: hidden;
+            padding: 20px;
+            overflow-x: hidden;
         }
 
-        /* Google Play Penceresi */
-        .google-pay-modal {
+        .header { text-align: center; margin-bottom: 30px; }
+        .status { color: #ff0; font-weight: bold; margin-top: 10px; }
+
+        .main-container {
+            display: flex;
+            width: 900px;
+            border: 1px dashed #444;
+            background-color: #111;
+            position: relative;
+        }
+
+        .sidebar {
+            width: 150px;
+            padding: 20px;
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+        }
+
+        .content {
+            flex: 1;
+            padding: 40px;
+            text-align: center;
+            border-left: 2px solid #f00;
+            border-right: 2px solid #f00;
+            background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+        }
+
+        h1 { font-size: 28px; color: #0f0; }
+        h2 { color: #0f0; font-size: 22px; }
+
+        .download-btn {
+            background-color: #f00;
+            color: #fff;
+            padding: 20px 40px;
+            border: none;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 0 15px #f00;
+        }
+
+        .sponsor-bar {
+            margin-top: 40px;
+            width: 800px;
+            border: 1px solid #444;
+            padding: 15px;
+            text-align: center;
+            color: #f00;
+        }
+
+        /* --- GOOGLE PLAY MODAL STİLLERİ (GİZLİ BAŞLAR) --- */
+        #googlePayModal {
+            display: none; /* İlk başta kapalı */
             background-color: #fff;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             position: fixed;
             bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
             border-top-left-radius: 20px;
             border-top-right-radius: 20px;
             padding: 20px;
-            box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
-            animation: slideUp 0.4s ease-out;
+            box-shadow: 0 -10px 50px rgba(0,0,0,0.8);
+            z-index: 1000;
+            font-family: 'Roboto', Arial, sans-serif;
             color: #333;
         }
 
-        @keyframes slideUp {
-            from { transform: translateY(100%); }
-            to { transform: translateY(0); }
-        }
-
-        .gp-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .gp-logo {
-            width: 40px;
-            margin-right: 15px;
-        }
-
-        .gp-title {
-            font-size: 18px;
-            font-weight: 500;
-            color: #202124;
-        }
-
-        .item-info {
-            display: flex;
-            justify-content: space-between;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-            margin-bottom: 15px;
-        }
-
-        .item-name { font-weight: bold; color: #5f6368; }
-        .item-price { font-weight: bold; color: #202124; }
-
-        .balance-info {
-            display: flex;
-            align-items: center;
-            background: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .balance-text { font-size: 14px; color: #3c4043; flex: 1; }
-
+        .gp-header { display: flex; align-items: center; margin-bottom: 20px; }
+        .gp-logo { width: 30px; margin-right: 15px; }
+        
+        .item-info { display: flex; justify-content: space-between; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        
         .buy-btn {
-            background-color: #01875f; /* Google Play Yeşili */
+            background-color: #01875f;
             color: white;
             width: 100%;
-            padding: 14px;
+            padding: 15px;
             border: none;
-            border-radius: 25px;
+            border-radius: 30px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
         }
 
-        .buy-btn:hover { background-color: #016d4d; }
-
-        .footer-text {
-            text-align: center;
-            font-size: 11px;
-            color: #80868b;
-            margin-top: 15px;
+        /* Karartma Arka Planı */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
         }
     </style>
 </head>
 <body>
 
-<div class="google-pay-modal">
-    <div class="gp-header">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" class="gp-logo" alt="GP">
-        <div class="gp-title">Google Play</div>
+    <div class="header">
+        <h1>ZYnaX v45: THE CORE BREAKER</h1>
+        <div class="status">Status: SECURE CONNECTION ESTABLISHED</div>
     </div>
 
-    <div class="item-info">
-        <div class="item-name">ZYnaX v45 Pro License</div>
-        <div class="item-price">1,00 TL</div>
-    </div>
-
-    <div class="balance-info">
-        <div class="balance-text">
-            <strong>Google Play Bakiyesi:</strong><br>
-            Mevcut bakiye: 15,50 TL
+    <div class="main-container">
+        <div class="sidebar">REKLAM ALANI<br><br>Hacker Soğutucu %50 İndirimde!</div>
+        
+        <div class="content">
+            <h2>LATEST VERSION: v45.0.2</h2>
+            <p>Bu yazılım MSI Katana sistemler için optimize edilmiştir.</p>
+            <ul style="text-align: left; display: inline-block; color: #0f0;">
+                <li>Real-Time IP Tracking (Aktif)</li>
+                <li>BIOS Kernel Access (Aktif)</li>
+            </ul>
+            <br><br>
+            <button onclick="odemeBaslat()" class="download-btn">ZYnaX v45 İNDİR (.py)</button>
+            <p style="color: #888; font-size: 12px; margin-top: 15px;">Toplam İndirme: 145,283</p>
         </div>
-        <span style="color: #01875f; font-weight: bold;">Seçili</span>
+
+        <div class="sidebar">REKLAM ALANI<br><br>Erzurum Siber Kursu Başladı!</div>
     </div>
 
-    <button class="buy-btn" onclick="odemeTamam()">TEK TIKLA SATIN AL</button>
+    <div class="sponsor-bar">SPONSOR: ZYnaX VPN – Log Tutmayan Tek Siber Kalkan</div>
 
-    <div class="footer-text">
-        "Satın Al" butonuna basarak Google Play Hizmet Şartları'nı kabul etmiş olursunuz. 1 TL bakiyenizden düşülecek ve boşa gidecektir.
+    <div id="overlay"></div>
+    <div id="googlePayModal">
+        <div class="gp-header">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" class="gp-logo">
+            <div style="font-size: 18px; font-weight: 500;">Google Play</div>
+        </div>
+        <div class="item-info">
+            <div style="color: #5f6368;">ZYnaX v45 License</div>
+            <div style="font-weight: bold;">1,00 TL</div>
+        </div>
+        <div style="background: #f1f3f4; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 14px;">
+            <strong>Google Play Bakiyesi</strong><br>Bakiye: 15,50 TL
+        </div>
+        <button class="buy-btn" onclick="tamamla()">TEK TIKLA SATIN AL</button>
+        <p style="font-size: 10px; color: #999; text-align: center; margin-top: 10px;">
+            Ödeme işleminiz Google tarafından (sözde) korunmaktadır.
+        </p>
     </div>
-</div>
 
-<script>
-    function odemeTamam() {
-        alert('Ödeme Başarılı! 1 TL Google Bakiyenizden düşüldü (Şaka şaka, hiçbir yere gitmedi). ZYnaX v45 İndiriliyor...');
-        window.location.href = "zynax_v45.py"; // Buraya dosya linkini koyarsın
-    }
-</script>
+    <script>
+        function odemeBaslat() {
+            // Önce o mesajı gösterelim
+            alert("Ödeme sayfasına yönlendiriliyorsunuz... 1 TL Öde ve İndir!");
+            
+            // Mesajdan sonra Google Play penceresini açalım
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('googlePayModal').style.display = 'block';
+        }
 
+        function tamamla() {
+            alert("Ödeme Başarılı! 1 TL Google bakiyenizden (öylesine) düştü. İndirme başlıyor...");
+            // Buradan sonra gerçek dosyayı indirebilirsin
+            location.reload(); 
+        }
+    </script>
 </body>
 </html>
