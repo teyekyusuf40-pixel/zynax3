@@ -24,7 +24,7 @@ def giris_ekrani():
     print(f"\t\t╚══════════════════════════════════════════════╝{RES}")
     print(f"\n\t\t{Y}DİKKAT: Hiçbir kullanıcı dosyası SİLİNMEYECEKTİR.")
     print(f"\t\tSistem kararlılığı için testler başlatılıyor.{RES}")
-    print(f"\t\t{C}Yusuf Dadaş'ın komut merkezi yükleniyor...{RES}")
+    print(f"\t\t{C}Yapımcı ZyNax(Yusuf)...{RES}")
     for i in range(5, 0, -1):
         print(f"\t\t[ SİSTEMİN AÇILMASINA: {i} SANİYE ]", end="\r")
         time.sleep(1)
