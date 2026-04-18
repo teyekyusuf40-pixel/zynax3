@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ZYnaX v45: THE CORE BREAKER</title>
+    <title>ZYnaX v45: Multi-Platform Edition</title>
     <style>
         body {
             background-color: #000;
@@ -17,51 +17,50 @@
         }
 
         .header { text-align: center; margin-bottom: 30px; }
-        .status { color: #ff0; font-weight: bold; margin-top: 10px; font-size: 14px; }
+        .status { color: #ff0; font-weight: bold; margin-bottom: 20px; font-size: 14px; }
 
-        .main-container {
+        .platforms-wrapper {
             display: flex;
-            width: 95%;
-            max-width: 900px;
-            border: 1px dashed #444;
-            background-color: #111;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            width: 100%;
+            max-width: 1000px;
         }
 
-        .sidebar {
-            width: 120px;
-            padding: 15px;
-            font-size: 11px;
-            color: #888;
-            text-align: center;
-        }
-
-        .content {
+        /* --- ORTAK PANEL STİLİ --- */
+        .platform-card {
             flex: 1;
-            padding: 40px 20px;
+            min-width: 300px;
+            background-color: #111;
+            border: 1px dashed #444;
+            padding: 30px;
             text-align: center;
-            border-left: 2px solid #f00;
-            border-right: 2px solid #f00;
-            background: linear-gradient(180deg, #1a1a1a 0%, #111 100%);
+            transition: 0.3s;
         }
 
-        h1 { font-size: 24px; text-transform: uppercase; letter-spacing: 2px; margin: 0; }
-        h2 { color: #0f0; margin-top: 10px; font-size: 20px; }
+        /* Windows Özel */
+        .win-card { border-left: 4px solid #f00; }
+        .win-btn { background-color: #f00; color: #fff; box-shadow: 0 0 15px #f00; }
 
-        .download-btn {
-            background-color: #f00;
-            color: #fff;
-            padding: 18px 35px;
+        /* Mac Özel */
+        .mac-card { border-left: 4px solid #007aff; }
+        .mac-btn { background-color: #007aff; color: #fff; box-shadow: 0 0 15px #007aff; }
+
+        .dl-btn {
+            padding: 15px 30px;
             border: none;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 5px;
-            box-shadow: 0 0 15px #f00;
             margin-top: 20px;
+            transition: 0.3s;
         }
 
-        /* Google Play Modal */
+        .dl-btn:hover { transform: scale(1.05); opacity: 0.8; }
+
+        /* --- GOOGLE PLAY MODAL --- */
         #overlay {
             display: none;
             position: fixed;
@@ -90,7 +89,6 @@
 
         @keyframes slideUp { from { transform: translate(-50%, 100%); } to { transform: translate(-50%, 0); } }
 
-        .gp-logo { width: 30px; margin-right: 15px; }
         .buy-btn { background-color: #01875f; color: #fff; width: 100%; padding: 15px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
@@ -98,32 +96,43 @@
 
     <div class="header">
         <h1>ZYnaX v45: THE CORE BREAKER</h1>
-        <div class="status">Status: SECURE CONNECTION ESTABLISHED</div>
+        <div class="status">SYSTEMS READY: WINDOWS & macOS</div>
     </div>
 
-    <div class="main-container">
-        <div class="sidebar">REKLAM ALANI</div>
-
-        <div class="content">
-            <h2>LATEST VERSION: v45.0.2</h2>
-            <p>MSI Katana ve yüksek performanslı sistemler için optimize edilmiştir.</p>
-            <br>
-            <button onclick="odemeAc()" class="download-btn">
-                ZYnaX v45 İNDİR (.py)
-            </button>
+    <div class="platforms-wrapper">
+        <div class="platform-card win-card">
+            <h2 style="color: #f00;">WINDOWS</h2>
+            <p style="font-size: 13px;">MSI Katana & PC Systems</p>
+            <ul style="text-align: left; font-size: 12px; color: #888;">
+                <li>• DirectX Optimization</li>
+                <li>• Registry Bypass</li>
+            </ul>
+            <button onclick="odemeAc('ZYnaXPC.py')" class="dl-btn win-btn">Windows (.py)</button>
         </div>
 
-        <div class="sidebar">REKLAM ALANI</div>
+        <div class="platform-card mac-card">
+            <h2 style="color: #007aff;">macOS</h2>
+            <p style="font-size: 13px;">Apple Silicon & Intel Mac</p>
+            <ul style="text-align: left; font-size: 12px; color: #888;">
+                <li>• Neural Engine Support</li>
+                <li>• Kernel Integrity</li>
+            </ul>
+            <button onclick="odemeAc('ZYnaX_Mac.py')" class="dl-btn mac-btn">macOS (.py)</button>
+        </div>
+    </div>
+
+    <div style="margin-top: 40px; border: 1px solid #444; padding: 10px; width: 90%; max-width: 800px; text-align: center; color: #f00;">
+        SPONSOR: ZYnaX VPN - Siber Kalkan
     </div>
 
     <div id="overlay" onclick="odemeKapat()"></div>
     <div id="gpModal">
         <div style="display: flex; align-items: center; margin-bottom: 20px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" class="gp-logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" width="30" style="margin-right: 15px;">
             <b style="font-size: 18px;">Google Play</b>
         </div>
         <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-            <span>ZYnaX v45 Pro License</span>
+            <span id="platformName">ZYnaX v45 Pro</span>
             <b>1,00 TL</b>
         </div>
         <div style="background: #f1f3f4; padding: 15px; border-radius: 12px; font-size: 14px;">
@@ -133,7 +142,11 @@
     </div>
 
     <script>
-        function odemeAc() {
+        let secilenDosya = "";
+
+        function odemeAc(dosyaAdi) {
+            secilenDosya = dosyaAdi;
+            document.getElementById('platformName').innerText = "ZYnaX v45 (" + dosyaAdi + ")";
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('gpModal').style.display = 'block';
         }
@@ -144,14 +157,11 @@
         }
 
         function indirmeyiBaslat() {
-            alert("Ödeme Onaylandı! Yusuf Dadaş'ın dosyası indiriliyor...");
+            alert("Ödeme Onaylandı! 1 TL düştü. Dosya indiriliyor...");
             
-            // GITHUB'DAKİ GERÇEK DOSYA ADIN:
-            const dosya = 'ZYnaXPC.py'; 
-
             const link = document.createElement('a');
-            link.href = dosya;
-            link.setAttribute('download', dosya);
+            link.href = secilenDosya;
+            link.setAttribute('download', secilenDosya);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
