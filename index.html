@@ -4,151 +4,70 @@
     <meta charset="UTF-8">
     <title>ZYnaX v45: THE CORE BREAKER</title>
     <style>
-        /* Ana Tema */
-        body {
-            background-color: #000;
-            color: #0f0;
-            font-family: 'Courier New', Courier, monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-            overflow: hidden;
-        }
-
-        .main-container {
-            width: 900px;
-            border: 1px dashed #444;
-            background-color: #111;
-            padding: 50px;
-            text-align: center;
-            border-left: 3px solid #f00;
-            border-right: 3px solid #f00;
-            box-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
-            margin-top: 50px;
-        }
-
-        .download-btn {
-            background-color: #f00;
-            color: #fff;
-            padding: 25px 50px;
-            border: none;
-            font-size: 24px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 8px;
-            box-shadow: 0 0 20px #f00;
-            transition: 0.3s;
-        }
-
-        .download-btn:hover { transform: scale(1.1); }
-
-        /* --- GOOGLE PLAY MODAL (ANIMASYONLU) --- */
-        #googlePayModal {
-            display: none; 
-            background-color: #fff;
-            width: 100%;
-            max-width: 420px;
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            padding: 25px;
-            box-shadow: 0 -15px 60px rgba(0,0,0,0.9);
-            z-index: 1000;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            color: #333;
-            animation: slideUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        @keyframes slideUp {
-            from { transform: translate(-50%, 100%); }
-            to { transform: translate(-50%, 0); }
-        }
-
-        .gp-header { display: flex; align-items: center; margin-bottom: 25px; }
-        .gp-logo { width: 35px; margin-right: 15px; }
+        body { background-color: #000; color: #0f0; font-family: 'Courier New', monospace; text-align: center; padding: 50px; overflow: hidden; }
+        .box { border: 2px solid #f00; padding: 50px; background: #111; display: inline-block; box-shadow: 0 0 30px rgba(255,0,0,0.3); }
+        .btn { background: #f00; color: #fff; padding: 25px 50px; border: none; font-size: 24px; font-weight: bold; cursor: pointer; border-radius: 10px; box-shadow: 0 0 20px #f00; }
         
-        .item-info { display: flex; justify-content: space-between; margin-bottom: 25px; border-bottom: 1px solid #eee; padding-bottom: 15px; }
-        
-        .buy-btn {
-            background-color: #01875f;
-            color: white;
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 35px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            z-index: 999;
-        }
+        /* Google Play Modal */
+        #gpModal { display: none; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 420px; background: #fff; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 25px; box-shadow: 0 -10px 50px #000; z-index: 100; color: #333; font-family: 'Segoe UI', sans-serif; }
+        .overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 90; }
+        .buy-btn { background: #01875f; color: #fff; width: 100%; padding: 18px; border: none; border-radius: 35px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 
-    <h1 style="color: #f00;">ZYnaX v45: THE CORE BREAKER</h1>
-
-    <div class="main-container">
-        <h2 style="color: #0f0;">SİSTEM OPTİMİZE EDİLDİ</h2>
-        <p>MSI Katana Serisi İçin Özel v45.0.2 Sürümü</p>
+    <div class="box">
+        <h1 style="color: #f00;">ZYnaX v45 OFFICIAL</h1>
+        <p>MSI Katana & High Performance Systems</p>
         <br><br>
-        <button onclick="odemeBaslat()" class="download-btn">İNDİRMEK İÇİN TIKLA (.py)</button>
+        <button onclick="ac()" class="btn">İNDİR (.py)</button>
     </div>
 
-    <div id="overlay" onclick="kapat()"></div>
-    <div id="googlePayModal">
-        <div class="gp-header">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" class="gp-logo">
-            <div style="font-size: 20px; font-weight: 600; color: #202124;">Google Play</div>
+    <div class="overlay" id="bg" onclick="kapat()"></div>
+    <div id="gpModal">
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" width="35" style="margin-right: 15px;">
+            <b style="font-size: 20px;">Google Play</b>
         </div>
-        
-        <div class="item-info">
-            <div style="color: #5f6368; font-size: 16px;">ZYnaX v45 Pro</div>
-            <div style="font-weight: bold; font-size: 18px;">1,00 TL</div>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+            <span style="color: #5f6368;">ZYnaX v45 Pro License</span>
+            <b style="font-size: 18px;">1,00 TL</b>
         </div>
-
-        <div style="background: #f8f9fa; padding: 15px; border-radius: 12px; margin-bottom: 25px;">
-            <div style="font-size: 12px; color: #5f6368; margin-bottom: 5px;">ÖDEME YÖNTEMİ</div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: 600; color: #3c4043;">Google Play Bakiyesi</span>
-                <span style="color: #01875f; font-weight: bold; font-size: 14px;">Seçili</span>
+        <div style="background: #f1f3f4; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+            <div style="font-size: 12px; color: #5f6368;">ÖDEME YÖNTEMİ</div>
+            <div style="display: flex; justify-content: space-between; margin-top: 5px;">
+                <b>Google Play Bakiyesi</b>
+                <span style="color: #01875f; font-weight: bold;">Seçili</span>
             </div>
-            <div style="font-size: 13px; color: #80868b; margin-top: 3px;">Bakiye: 25,00 TL</div>
+            <div style="font-size: 13px; color: #80868b;">Bakiye: 25,00 TL</div>
         </div>
-
-        <button class="buy-btn" onclick="basarili()">TEK TIKLA SATIN AL</button>
-        
-        <p style="font-size: 11px; color: #9aa0a6; text-align: center; margin-top: 15px; line-height: 1.4;">
-            "Satın Al"a bastığınızda işlem onaylanır. Ödeme Yusuf Dadaş'ın siber havuzuna (öylesine) gönderilir.
-        </p>
+        <button class="buy-btn" onclick="indir()">TEK TIKLA SATIN AL</button>
     </div>
 
     <script>
-        function odemeBaslat() {
-            // Artık alert yok! Direkt paneli açıyoruz.
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('googlePayModal').style.display = 'block';
+        function ac() {
+            document.getElementById('bg').style.display = 'block';
+            document.getElementById('gpModal').style.display = 'block';
         }
 
         function kapat() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('googlePayModal').style.display = 'none';
+            document.getElementById('bg').style.display = 'none';
+            document.getElementById('gpModal').style.display = 'none';
         }
 
-        function basarili() {
-            // Sadece sonunda bir onay verir
-            alert("İşlem Başarılı! 1 TL Google bakiyenizden düştü. Dosya indiriliyor...");
+        function indir() {
+            alert("Ödeme Onaylandı! 1 TL Bakiyenizden düşüldü. Dosya indiriliyor...");
+            
+            // GITHUB İÇİN DOĞRUDAN İNDİRME LİNKİ
+            // index.html ile zynax_v45.py aynı klasördeyse bu kod çalışır.
+            const fileUrl = 'zynax_v45.py'; 
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.setAttribute('download', 'zynax_v45.py');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
             kapat();
         }
     </script>
