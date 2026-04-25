@@ -64,7 +64,7 @@ def main():
         
         elif secim == "2":
             mac_sound()
-            mac_alert("SYSTEM ERROR", "Kritik Hata: ZYnaX v45 dosyalarınızı şifreledi! (Sadece Şaka)")
+            mac_alert("SYSTEM ERROR", "Kritik Hata: ZYnaX v45 dosyalarınızı şifreledi! ")
             main()
 
         elif secim == "3":
