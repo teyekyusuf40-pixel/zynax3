@@ -5,140 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZYnaX v45: Multi-Platform Edition</title>
     <style>
+        /* --- GENEL TEMA VE NEON EFEKTLERİ --- */
         body {
             background-color: #000;
             color: #0f0;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
             margin: 0;
             padding: 20px;
+            overflow-x: hidden;
         }
 
-        .header { text-align: center; margin-bottom: 30px; }
-        .status { color: #ff0; font-weight: bold; margin-bottom: 20px; font-size: 14px; }
+        .header h1 {
+            font-size: 3.5rem;
+            color: #0f0;
+            text-shadow: 0 0 20px #0f0, 0 0 30px #0a0;
+            margin-bottom: 5px;
+            letter-spacing: 5px;
+        }
+
+        .status { 
+            color: #ff0; 
+            font-weight: bold; 
+            margin-bottom: 40px; 
+            font-size: 16px; 
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px #aa0;
+        }
 
         .platforms-wrapper {
             display: flex;
-            gap: 20px;
+            gap: 25px;
             flex-wrap: wrap;
             justify-content: center;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1100px;
         }
 
-        /* --- ORTAK PANEL STİLİ --- */
+        /* --- KART TASARIMLARI --- */
         .platform-card {
             flex: 1;
-            min-width: 300px;
-            background-color: #111;
-            border: 1px dashed #444;
-            padding: 30px;
+            min-width: 320px;
+            background: linear-gradient(145deg, #111, #050505);
+            border: 1px solid #333;
+            padding: 40px;
             text-align: center;
-            transition: 0.3s;
+            transition: 0.4s all ease;
+            border-radius: 4px;
+            position: relative;
         }
 
-        /* Windows Özel */
-        .win-card { border-left: 4px solid #f00; }
-        .win-btn { background-color: #f00; color: #fff; box-shadow: 0 0 15px #f00; }
+        .platform-card:hover {
+            transform: translateY(-10px);
+            border-color: #555;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+        }
 
-        /* Mac Özel */
-        .mac-card { border-left: 4px solid #007aff; }
-        .mac-btn { background-color: #007aff; color: #fff; box-shadow: 0 0 15px #007aff; }
+        /* Windows Glow */
+        .win-card { border-top: 5px solid #f00; }
+        .win-card h2 { color: #f00; text-shadow: 0 0 15px rgba(255,0,0,0.5); }
+        .win-btn { background: #f00; color: #fff; box-shadow: 0 0 20px rgba(255,0,0,0.4); }
+
+        /* Mac Glow */
+        .mac-card { border-top: 5px solid #007aff; }
+        .mac-card h2 { color: #007aff; text-shadow: 0 0 15px rgba(0,122,255,0.5); }
+        .mac-btn { background: #007aff; color: #fff; box-shadow: 0 0 20px rgba(0,122,255,0.4); }
+
+        /* KURULUMSUZ ÖZEL (PORTABLE) */
+        .portable-card { 
+            border-top: 5px solid #ff9900; 
+            margin-top: 30px; 
+            max-width: 700px; 
+            width: 100%; 
+            background: linear-gradient(145deg, #1a1000, #0a0500);
+        }
+        .portable-card h2 { color: #ff9900; text-shadow: 0 0 15px rgba(255,153,0,0.5); }
+        .port-btn { background: #ff9900; color: #000; box-shadow: 0 0 25px rgba(255,153,0,0.5); }
 
         .dl-btn {
-            padding: 15px 30px;
+            padding: 18px 40px;
             border: none;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 18px;
+            font-weight: 900;
             cursor: pointer;
-            border-radius: 5px;
-            margin-top: 20px;
+            border-radius: 3px;
+            margin-top: 25px;
             transition: 0.3s;
+            text-transform: uppercase;
         }
 
-        .dl-btn:hover { transform: scale(1.05); opacity: 0.8; }
+        .dl-btn:hover { transform: scale(1.1); filter: brightness(1.2); }
 
-        /* --- GOOGLE PLAY MODAL --- */
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 999;
-        }
-
+        /* --- GOOGLE PLAY MODAL (ORİJİNAL KODUNLA AYNI) --- */
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; }
         #gpModal {
-            display: none;
-            position: fixed;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100%;
-            max-width: 400px;
-            background-color: #fff;
-            border-radius: 24px 24px 0 0;
-            padding: 25px;
-            box-shadow: 0 -10px 50px #000;
-            z-index: 1000;
-            font-family: Arial, sans-serif;
-            color: #333;
-            animation: slideUp 0.4s ease-out;
+            display: none; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 100%; max-width: 450px; background-color: #fff; border-radius: 24px 24px 0 0;
+            padding: 30px; box-shadow: 0 -10px 50px #000; z-index: 1000; font-family: 'Roboto', Arial, sans-serif; color: #333;
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-
         @keyframes slideUp { from { transform: translate(-50%, 100%); } to { transform: translate(-50%, 0); } }
+        .buy-btn { background-color: #01875f; color: #fff; width: 100%; padding: 18px; border: none; border-radius: 35px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 25px; }
 
-        .buy-btn { background-color: #01875f; color: #fff; width: 100%; padding: 15px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        .sponsor {
+            margin-top: 50px; border: 1px solid #f00; padding: 15px; width: 90%; max-width: 900px;
+            text-align: center; color: #f00; font-weight: bold; letter-spacing: 3px; background: rgba(255,0,0,0.05);
+        }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>ZYnaX v45: THE CORE BREAKER</h1>
-        <div class="status">SYSTEMS READY: WINDOWS & macOS</div>
+        <h1>ZYnaX v45</h1>
+        <div class="status">OS STATUS: EXPLOIT READY</div>
     </div>
 
     <div class="platforms-wrapper">
         <div class="platform-card win-card">
-            <h2 style="color: #f00;">WINDOWS</h2>
-            <p style="font-size: 13px;">MSI Katana & PC Systems</p>
-            <ul style="text-align: left; font-size: 12px; color: #888;">
-                <li>• DirectX Optimization</li>
-                <li>• Registry Bypass</li>
+            <h2>WINDOWS</h2>
+            <p style="color: #888; font-size: 14px; margin-bottom: 20px;">PC & Laptop Systems (Python 3.x)</p>
+            <ul style="text-align: left; font-size: 13px; color: #aaa; list-style: none; padding: 0;">
+                <li>[+] DirectX Kernel Optimization</li>
+                <li>[+] Registry Level Bypass</li>
+                <li>[+] Full Hardware Access</li>
             </ul>
-            <button onclick="odemeAc('ZYnaXPC.py')" class="dl-btn win-btn">Windows (.py)</button>
+            <button onclick="odemeAc('ZYnaXPC.py')" class="dl-btn win-btn">İNDİR (.PY)</button>
         </div>
 
         <div class="platform-card mac-card">
-            <h2 style="color: #007aff;">macOS</h2>
-            <p style="font-size: 13px;">Apple Silicon & Intel Mac</p>
-            <ul style="text-align: left; font-size: 12px; color: #888;">
-                <li>• Neural Engine Support</li>
-                <li>• Kernel Integrity</li>
+            <h2>macOS</h2>
+            <p style="color: #888; font-size: 14px; margin-bottom: 20px;">Apple Silicon & Intel (Python 3.x)</p>
+            <ul style="text-align: left; font-size: 13px; color: #aaa; list-style: none; padding: 0;">
+                <li>[+] M1/M2/M3 Neural Support</li>
+                <li>[+] SIP Security Bypass</li>
+                <li>[+] Terminal Integration</li>
             </ul>
-            <button onclick="odemeAc('ZYnaX_Mac.py')" class="dl-btn mac-btn">macOS (.py)</button>
+            <button onclick="odemeAc('ZYnaX_Mac.py')" class="dl-btn mac-btn">İNDİR (.PY)</button>
         </div>
     </div>
 
-    <div style="margin-top: 40px; border: 1px solid #444; padding: 10px; width: 90%; max-width: 800px; text-align: center; color: #f00;">
-        SPONSOR: ZYnaX VPN - Siber Kalkan
+    <div class="platform-card portable-card">
+        <h2>PORTABLE EDITION</h2>
+        <p style="color: #ff9900; font-weight: bold;">⚠️ PYTHON GEREKTİRMEZ - TAK VE ÇALIŞTIR</p>
+        <p style="color: #888; font-size: 13px; margin: 10px 0;">Herhangi bir Windows bilgisayarda kurulum yapmadan doğrudan terminal üzerinden yetki alır.</p>
+        <button onclick="odemeAc('ZyNax_Direct_Access.bat')" class="dl-btn port-btn">HIZLI BAŞLAT (.BAT)</button>
+    </div>
+
+    <div class="sponsor">
+        ⚡ SPONSOR: ZYnaX VPN - SİBER KALKAN AKTİF ⚡
     </div>
 
     <div id="overlay" onclick="odemeKapat()"></div>
     <div id="gpModal">
         <div style="display: flex; align-items: center; margin-bottom: 20px;">
             <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Google_Play_Arrow_logo.svg" width="30" style="margin-right: 15px;">
-            <b style="font-size: 18px;">Google Play</b>
+            <b style="font-size: 20px; color: #5f6368;">Google Play</b>
         </div>
-        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-            <span id="platformName">ZYnaX v45 Pro</span>
-            <b>1,00 TL</b>
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 18px;">
+            <span id="platformName">ZYnaX Pro Edition</span>
+            <b style="color: #000;">1,00 TL</b>
         </div>
-        <div style="background: #f1f3f4; padding: 15px; border-radius: 12px; font-size: 14px;">
-            Google Play Bakiyesi: <b>25,00 TL</b>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; font-size: 15px; border: 1px solid #e8eaed;">
+            Hesap: <span style="color:#1a73e8">yusuf_pixel@gmail.com</span><br>
+            Google Play Bakiyesi: <b style="color: #01875f;">25,00 TL</b>
         </div>
         <button class="buy-btn" onclick="indirmeyiBaslat()">TEK TIKLA SATIN AL</button>
+        <p style="font-size: 12px; color: #888; text-align: center; margin-top: 15px;">Bu işlemden sonra indirme otomatik başlar.</p>
     </div>
 
     <script>
@@ -146,7 +181,7 @@
 
         function odemeAc(dosyaAdi) {
             secilenDosya = dosyaAdi;
-            document.getElementById('platformName').innerText = "ZYnaX v45 (" + dosyaAdi + ")";
+            document.getElementById('platformName').innerText = "ZYnaX (" + dosyaAdi + ")";
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('gpModal').style.display = 'block';
         }
@@ -157,15 +192,13 @@
         }
 
         function indirmeyiBaslat() {
-            alert("Ödeme Onaylandı! 1 TL düştü. Dosya indiriliyor...");
-            
+            alert("Ödeme Başarılı! ZyNax Sistemi İndiriliyor...");
             const link = document.createElement('a');
             link.href = secilenDosya;
             link.setAttribute('download', secilenDosya);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-
             odemeKapat();
         }
     </script>
