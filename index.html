@@ -2,157 +2,105 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ZYnaX v45 | MULTI-CORE ACCESS</title>
+    <title>ZYnaX v45 | SECURE MULTI-OS</title>
     <style>
-        body {
-            background-color: #000;
-            color: #0f0;
-            font-family: 'Consolas', monospace;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-        }
+        body { background-color: #050505; color: #0f0; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
+        #matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.1; }
+        
+        .ad-banner { position: absolute; top: 10px; width: 728px; height: 90px; background: #111; border: 1px solid #333; display: flex; align-items: center; justify-content: center; color: #444; font-size: 12px; }
+        
+        .glitch { font-size: 60px; font-weight: 900; text-shadow: 2px 2px #f00, -2px -2px #00f; margin-bottom: 30px; letter-spacing: 5px; }
+        
+        .btn-main { background: linear-gradient(45deg, #ff9900, #ff5500); color: #fff; padding: 25px 80px; font-size: 28px; font-weight: bold; border: none; cursor: pointer; border-radius: 50px; box-shadow: 0 0 30px rgba(255, 85, 0, 0.5); transition: 0.3s; }
+        
+        /* ÖDEME VE SEÇİM MODALI */
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; backdrop-filter: blur(10px); }
+        #modal-container { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; color: #000; width: 420px; padding: 30px; border-radius: 20px; z-index: 101; text-align: center; }
 
-        #matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
+        /* KART TASARIMI */
+        .input-group { margin-bottom: 15px; text-align: left; }
+        .input-group label { display: block; font-size: 11px; color: #666; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
 
-        .glitch {
-            font-size: 70px;
-            font-weight: bold;
-            text-shadow: 3px 3px #f00, -3px -3px #00f;
-            animation: glitch 2s infinite;
-            margin-bottom: 20px;
-        }
+        .pay-btn { background: #0070ba; color: #fff; width: 100%; padding: 15px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
+        /* SEÇENEKLER (ÖDEME SONRASI) */
+        #os-selection { display: none; }
+        .os-btn { display: block; width: 100%; padding: 15px; margin: 10px 0; border: 2px solid #0070ba; background: #fff; color: #0070ba; font-weight: bold; text-decoration: none; border-radius: 10px; transition: 0.3s; }
+        .os-btn:hover { background: #0070ba; color: #fff; }
 
-        /* ANA BUTON */
-        .btn-main {
-            background: #ff9900;
-            color: #000;
-            padding: 25px 60px;
-            font-size: 30px;
-            font-weight: 900;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            box-shadow: 0 0 30px #ff9900;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-
-        .btn-main:hover { transform: scale(1.1); box-shadow: 0 0 60px #ff9900; }
-
-        /* SEÇENEK PANELİ (MODAL) */
-        #overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85);
-            z-index: 100;
-            backdrop-filter: blur(5px);
-        }
-
-        #selection-box {
-            display: none;
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background: #111;
-            border: 2px solid #0f0;
-            padding: 40px;
-            z-index: 101;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            box-shadow: 0 0 100px rgba(0, 255, 0, 0.2);
-        }
-
-        .option-btn {
-            display: block;
-            width: 100%;
-            padding: 20px;
-            margin: 15px 0;
-            background: transparent;
-            border: 1px solid #0f0;
-            color: #0f0;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-        }
-
-        .option-btn:hover {
-            background: #0f0;
-            color: #000;
-            box-shadow: 0 0 20px #0f0;
-        }
-
-        .close-btn {
-            margin-top: 20px;
-            color: #f00;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: underline;
-        }
+        #loader { display: none; padding: 20px; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0070ba; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
+    <div class="ad-banner">ZYnaX GLOBAL CLOUD SİSTEMİNE HOŞ GELDİNİZ</div>
 
     <div class="glitch">ZYnaX v45</div>
-    <button class="btn-main" onclick="panelAc()">SİSTEMİ BAŞLAT</button>
+    <button class="btn-main" onclick="modalAc()">SİSTEMİ BAŞLAT</button>
 
-    <div id="overlay" onclick="panelKapat()"></div>
-    <div id="selection-box">
-        <h2 style="color: #ff9900; margin-bottom: 30px;">VERSİYON SEÇİNİZ</h2>
-        
-        <a href="ZYnaXPC-NO-SETUP.bat" class="option-btn" download>PORTABLE EDITION (.BAT)</a>
-        
-        <a href="ZYnaXPC.py" class="option-btn" download>WINDOWS FULL (.PY)</a>
-        
-        <a href="ZYnaX_Mac.py" class="option-btn" download>macOS VERSION (.PY)</a>
+    <div id="overlay"></div>
+    <div id="modal-container">
+        <div id="payment-step">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" height="25">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" height="20">
+            </div>
+            <h3>Güvenli Ödeme Paneli</h3>
+            <div class="input-group"><label>Kart Numarası</label><input type="text" value="**** **** **** 4492" disabled></div>
+            <div style="display: flex; gap: 10px;">
+                <div class="input-group" style="flex:1;"><label>Son Kullanma</label><input type="text" value="05/29" disabled></div>
+                <div class="input-group" style="flex:1;"><label>CVV</label><input type="text" value="***" disabled></div>
+            </div>
+            <p style="font-weight: bold; color: #c00;">Tutar: 150,00 TL</p>
+            <button class="pay-btn" onclick="odemeIsle()">ÖDEMEYİ ONAYLA</button>
+        </div>
 
-        <div class="close-btn" onclick="panelKapat()">İPTAL ET</div>
+        <div id="loader">
+            <div class="spinner"></div>
+            <p id="status-msg">Banka ile iletişim kuruluyor...</p>
+        </div>
+
+        <div id="os-selection">
+            <h3 style="color: #01875f;">✔ ÖDEME ONAYLANDI</h3>
+            <p>Lütfen indirmek istediğiniz sürümü seçin:</p>
+            <a href="ZYnaXPC-NO-SETUP.bat" class="os-btn">WINDOWS PORTABLE (.BAT)</a>
+            <a href="ZYnaXPC.py" class="os-btn">WINDOWS FULL (.PY)</a>
+            <a href="ZYnaX_Mac.py" class="os-btn">macOS VERSION (.PY)</a>
+        </div>
     </div>
 
     <script>
-        // Panel Fonksiyonları
-        function panelAc() {
+        function modalAc() {
             document.getElementById('overlay').style.display = 'block';
-            document.getElementById('selection-box').style.display = 'block';
-        }
-        function panelKapat() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('selection-box').style.display = 'none';
+            document.getElementById('modal-container').style.display = 'block';
         }
 
-        // Matrix Efekti (Arka Plan)
+        function odemeIsle() {
+            document.getElementById('payment-step').style.display = 'none';
+            document.getElementById('loader').style.display = 'block';
+            
+            setTimeout(() => { document.getElementById('status-msg').innerText = "Provizyon alınıyor..."; }, 1500);
+
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('os-selection').style.display = 'block';
+            }, 3500);
+        }
+
+        // Matrix Efekti
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        const letters = "010101ZYNAXERROR777";
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        const letters = "01ZYNAX";
         const fontSize = 16;
         const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
-
         function draw() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0f0";
-            ctx.font = fontSize + "px monospace";
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#0f0"; ctx.font = fontSize + "px monospace";
             for (let i = 0; i < drops.length; i++) {
                 const text = letters[Math.floor(Math.random() * letters.length)];
                 ctx.fillText(text, i * fontSize, drops[i] * fontSize);
