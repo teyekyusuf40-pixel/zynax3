@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ZYnaX v45 | COMMAND CENTER</title>
+    <title>ZYnaX v45 | MULTI-CORE ACCESS</title>
     <style>
         body {
             background-color: #000;
@@ -17,104 +17,138 @@
             overflow: hidden;
         }
 
-        /* Matrix Arka Plan */
-        #matrix {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-            opacity: 0.15;
-        }
+        #matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
 
-        /* Glitch Başlık */
         .glitch {
-            font-size: 80px;
+            font-size: 70px;
             font-weight: bold;
-            text-transform: uppercase;
-            position: relative;
-            text-shadow: 2px 2px #f00, -2px -2px #00f;
+            text-shadow: 3px 3px #f00, -3px -3px #00f;
             animation: glitch 2s infinite;
+            margin-bottom: 20px;
         }
 
         @keyframes glitch {
             0% { transform: translate(0); }
-            20% { transform: translate(-3px, 3px); }
-            40% { transform: translate(-3px, -3px); }
-            60% { transform: translate(3px, 3px); }
-            80% { transform: translate(3px, -3px); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
             100% { transform: translate(0); }
         }
 
-        .main-container {
-            border: 2px solid #0f0;
-            padding: 60px;
-            background: rgba(0, 10, 0, 0.9);
-            box-shadow: 0 0 50px rgba(0, 255, 0, 0.4);
-            text-align: center;
-            border-radius: 5px;
-        }
-
-        .status-text {
-            color: #ff0;
-            font-weight: bold;
-            letter-spacing: 3px;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #444;
-            padding-bottom: 10px;
-        }
-
-        /* Premium Turuncu Buton */
-        .btn-download {
-            display: inline-block;
+        /* ANA BUTON */
+        .btn-main {
             background: #ff9900;
             color: #000;
             padding: 25px 60px;
-            text-decoration: none;
             font-size: 30px;
             font-weight: 900;
-            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            box-shadow: 0 0 30px #ff9900;
+            text-transform: uppercase;
             transition: 0.3s;
-            box-shadow: 0 0 30px rgba(255, 153, 0, 0.6);
-            text-transform: uppercase;
         }
 
-        .btn-download:hover {
-            transform: scale(1.15);
-            box-shadow: 0 0 60px #ff9900;
-            filter: brightness(1.2);
+        .btn-main:hover { transform: scale(1.1); box-shadow: 0 0 60px #ff9900; }
+
+        /* SEÇENEK PANELİ (MODAL) */
+        #overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: 100;
+            backdrop-filter: blur(5px);
         }
 
-        .hint {
-            margin-top: 30px;
-            font-size: 11px;
-            color: #555;
-            text-transform: uppercase;
+        #selection-box {
+            display: none;
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: #111;
+            border: 2px solid #0f0;
+            padding: 40px;
+            z-index: 101;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 0 100px rgba(0, 255, 0, 0.2);
+        }
+
+        .option-btn {
+            display: block;
+            width: 100%;
+            padding: 20px;
+            margin: 15px 0;
+            background: transparent;
+            border: 1px solid #0f0;
+            color: #0f0;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .option-btn:hover {
+            background: #0f0;
+            color: #000;
+            box-shadow: 0 0 20px #0f0;
+        }
+
+        .close-btn {
+            margin-top: 20px;
+            color: #f00;
+            cursor: pointer;
+            font-size: 14px;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
-    
-    <div class="main-container">
-        <div class="glitch">ZYnaX v45</div>
-        <div class="status-text">BYPASS ENGINE: LOADED</div>
+
+    <div class="glitch">ZYnaX v45</div>
+    <button class="btn-main" onclick="panelAc()">SİSTEMİ BAŞLAT</button>
+
+    <div id="overlay" onclick="panelKapat()"></div>
+    <div id="selection-box">
+        <h2 style="color: #ff9900; margin-bottom: 30px;">VERSİYON SEÇİNİZ</h2>
         
-        <a href="ZYnaXPC-NO-SETUP.bat" class="btn-download" download>SİSTEMİ BAŞLAT</a>
+        <a href="ZYnaXPC-NO-SETUP.bat" class="option-btn" download>PORTABLE EDITION (.BAT)</a>
         
-        <div class="hint">Güvenlik uyarısını aşmak için: Sağ tık > Özellikler > Engellemeyi Kaldır</div>
+        <a href="ZYnaXPC.py" class="option-btn" download>WINDOWS FULL (.PY)</a>
+        
+        <a href="ZYnaX_Mac.py" class="option-btn" download>macOS VERSION (.PY)</a>
+
+        <div class="close-btn" onclick="panelKapat()">İPTAL ET</div>
     </div>
 
     <script>
+        // Panel Fonksiyonları
+        function panelAc() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('selection-box').style.display = 'block';
+        }
+        function panelKapat() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('selection-box').style.display = 'none';
+        }
+
+        // Matrix Efekti (Arka Plan)
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789$+-*/=%";
+        const letters = "010101ZYNAXERROR777";
         const fontSize = 16;
         const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
 
-        function drawMatrix() {
+        function draw() {
             ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "#0f0";
@@ -126,7 +160,7 @@
                 drops[i]++;
             }
         }
-        setInterval(drawMatrix, 35);
+        setInterval(draw, 33);
     </script>
 </body>
 </html>
