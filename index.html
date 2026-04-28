@@ -5,52 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZYnaX v45: Multi-Platform Edition</title>
     <style>
-        body {
-            background-color: #000;
-            color: #0f0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-        }
-        .header h1 {
-            font-size: 3.5rem;
-            color: #0f0;
-            text-shadow: 0 0 20px #0f0, 0 0 30px #0a0;
-            margin-bottom: 5px;
-            letter-spacing: 5px;
-        }
-        .status { color: #ff0; font-weight: bold; margin-bottom: 40px; font-size: 16px; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px #aa0; }
+        body { background-color: #000; color: #0f0; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+        .header h1 { font-size: 3.5rem; color: #0f0; text-shadow: 0 0 20px #0f0; margin-bottom: 5px; letter-spacing: 5px; }
+        .status { color: #ff0; font-weight: bold; margin-bottom: 40px; font-size: 16px; text-transform: uppercase; letter-spacing: 2px; }
         .platforms-wrapper { display: flex; gap: 25px; flex-wrap: wrap; justify-content: center; width: 100%; max-width: 1100px; }
-        .platform-card {
-            flex: 1;
-            min-width: 320px;
-            background: linear-gradient(145deg, #111, #050505);
-            border: 1px solid #333;
-            padding: 40px;
-            text-align: center;
-            transition: 0.4s all ease;
-            border-radius: 4px;
-        }
+        .platform-card { flex: 1; min-width: 320px; background: #111; border: 1px solid #333; padding: 40px; text-align: center; transition: 0.4s; border-radius: 4px; }
         .platform-card:hover { transform: translateY(-10px); border-color: #555; box-shadow: 0 15px 35px rgba(0,0,0,0.8); }
         .win-card { border-top: 5px solid #f00; }
         .mac-card { border-top: 5px solid #007aff; }
-        .portable-card { border-top: 5px solid #ff9900; margin-top: 30px; max-width: 700px; width: 100%; background: linear-gradient(145deg, #1a1000, #0a0500); }
+        .portable-card { border-top: 5px solid #ff9900; margin-top: 30px; max-width: 700px; width: 100%; background: #1a1000; }
         .dl-btn { padding: 18px 40px; border: none; font-size: 18px; font-weight: 900; cursor: pointer; border-radius: 3px; margin-top: 25px; transition: 0.3s; text-transform: uppercase; }
-        .win-btn { background: #f00; color: #fff; box-shadow: 0 0 20px rgba(255,0,0,0.4); }
-        .mac-btn { background: #007aff; color: #fff; box-shadow: 0 0 20px rgba(0,122,255,0.4); }
-        .port-btn { background: #ff9900; color: #000; box-shadow: 0 0 25px rgba(255,153,0,0.5); }
+        .win-btn { background: #f00; color: #fff; }
+        .mac-btn { background: #007aff; color: #fff; }
+        .port-btn { background: #ff9900; color: #000; font-weight: bold; }
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 999; }
         #gpModal {
             display: none; position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
             width: 100%; max-width: 450px; background-color: #fff; border-radius: 24px 24px 0 0;
-            padding: 30px; box-shadow: 0 -10px 50px #000; z-index: 1000; font-family: 'Roboto', Arial, sans-serif; color: #333;
-            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 30px; box-shadow: 0 -10px 50px #000; z-index: 1000; color: #333;
+            animation: slideUp 0.4s ease-out;
         }
         @keyframes slideUp { from { transform: translate(-50%, 100%); } to { transform: translate(-50%, 0); } }
-        .buy-btn { background-color: #01875f; color: #fff; width: 100%; padding: 18px; border: none; border-radius: 35px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 25px; }
+        .buy-btn { background-color: #01875f; color: #fff; width: 100%; padding: 18px; border: none; border-radius: 35px; font-weight: bold; cursor: pointer; margin-top: 25px; }
     </style>
 </head>
 <body>
@@ -104,7 +80,8 @@
         }
         function indirmeyiBaslat() {
             const link = document.createElement('a');
-            link.href = "./" + secilenDosya;
+            // GitHub üzerindeki dosyaya doğrudan erişim için:
+            link.href = secilenDosya;
             link.setAttribute('download', secilenDosya);
             document.body.appendChild(link);
             link.click();
